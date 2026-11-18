@@ -11,3 +11,8 @@ export async function getCategoriesWithCount() {
   );
   return rows;
 }
+
+export async function getAllCategories() {
+  const { rows } = await query("SELECT id, name FROM categories ORDER BY name");
+  return rows;
+}
