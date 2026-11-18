@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { query } from "@/lib/db";
 import { validateRegister } from "@/lib/validators";
-import { createSession, destroySession } from "@/lib/session";
+import { createSession, destroySession, getSession } from "@/lib/session";
 
 export async function registerAction(prevState, formData) {
   const input = {
@@ -75,6 +75,19 @@ export async function loginAction(prevState, formData) {
 }
 
 export async function logoutAction() {
+  await destroySession();
+  redirect("/login");
+}
+
+export async function deleteAccountAction() {
+  const user = await getSession();
+
+  // Hanya Curator yang ditolak yang boleh menghapus akunnya lewat halaman ini
+  if (!user || user.role !== "curator" || user.curator_status !== "rejected") {
+    redirect("/");
+  }
+
+  await query("DELETE FROM users WHERE id = $1", [user.id]); // sesinya ikut terhapus (CASCADE)
   await destroySession();
   redirect("/login");
 }
