@@ -13,3 +13,13 @@ export async function getArtworksByUser(userId) {
   );
   return rows;
 }
+
+export async function getArtworkForEdit(id, userId) {
+  const { rows } = await query(
+    `SELECT id, title, description, category_id, tags, file_url
+     FROM artworks
+     WHERE id = $1 AND user_id = $2`,
+    [id, userId]
+  );
+  return rows[0] ?? null;
+}
