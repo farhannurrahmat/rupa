@@ -30,3 +30,12 @@ export async function getPendingCurators() {
   );
   return rows;
 }
+
+export async function getCreatorProfile(id) {
+  const { rows } = await query(
+    `SELECT id, display_name, bio, avatar_url, link_instagram, link_behance, link_website
+     FROM users WHERE id = $1 AND role = 'member'`,
+    [id]
+  );
+  return rows[0] ?? null;
+}
