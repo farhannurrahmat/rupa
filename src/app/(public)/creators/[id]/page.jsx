@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getCreatorProfile } from "@/lib/queries/users";
 import { getArtworksByUser } from "@/lib/queries/artworks";
 import ArtworkCard from "@/components/artwork/ArtworkCard";
+import Photo from "@/components/ui/Photo";
 
 export default async function CreatorPage({ params }) {
   const { id } = await params;
@@ -23,7 +24,7 @@ export default async function CreatorPage({ params }) {
     <main className="mx-auto max-w-6xl space-y-10 px-4 py-10">
       <section className="flex flex-col items-center gap-4 text-center">
         {creator.avatar_url ? (
-          <img src={creator.avatar_url} alt={creator.display_name} className="h-28 w-28 rounded-full object-cover" />
+          <Photo src={creator.avatar_url} alt={creator.display_name} sizes="112px" className="h-28 w-28 rounded-full" />
         ) : (
           <div className="h-28 w-28 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400" />
         )}

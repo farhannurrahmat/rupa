@@ -7,6 +7,7 @@ import InteractionBar from "@/components/artwork/InteractionBar";
 import CommentForm from "@/components/artwork/CommentForm";
 import CommentList from "@/components/artwork/CommentList";
 import ReportForm from "@/components/artwork/ReportForm";
+import Photo from "@/components/ui/Photo";
 
 export default async function ArtworkDetailPage({ params }) {
   const { id } = await params;
@@ -20,20 +21,27 @@ export default async function ArtworkDetailPage({ params }) {
   const isMember = user?.role === "member";
   const state = isMember ? await getInteractionState(artworkId, user.id) : null;
   const comments = await getComments(artworkId);
-  const tags = artwork.tags.split(",").map((t) => t.trim()).filter(Boolean);
+  const tags = artwork.tags
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
   const isOwner = isMember && user.id === artwork.creator_id;
 
   return (
     <main className="mx-auto grid max-w-6xl gap-10 px-4 py-10 lg:grid-cols-[1fr_360px]">
       <div className="space-y-10">
-        <img
+        <Photo
           src={artwork.file_url}
           alt={artwork.title}
-          className="max-h-[80vh] w-full rounded-2xl border border-neutral-800 object-contain"
+          fit="contain"
+          priority
+          sizes="(max-width: 1024px) 100vw, 800px"
+          className="h-[70vh] w-full rounded-2xl border border-neutral-800"
         />
-
         <section className="space-y-5">
-          <h2 className="text-xl font-semibold">Komentar ({comments.length})</h2>
+          <h2 className="text-xl font-semibold">
+            Komentar ({comments.length})
+          </h2>
           {isMember && <CommentForm artworkId={artworkId} />}
           <CommentList comments={comments} currentUserId={user?.id} />
         </section>
@@ -45,9 +53,12 @@ export default async function ArtworkDetailPage({ params }) {
           <h1 className="text-3xl font-bold">{artwork.title}</h1>
         </div>
 
-        <Link href={`/creators/${artwork.creator_id}`} className="flex items-center gap-3">
+        <Link
+          href={`/creators/${artwork.creator_id}`}
+          className="flex items-center gap-3"
+        >
           {artwork.avatar_url ? (
-            <img src={artwork.avatar_url} alt="" className="h-11 w-11 rounded-full object-cover" />
+           <Photo src={artwork.avatar_url} alt="" sizes="44px" className="h-11 w-11 shrink-0 rounded-full" />
           ) : (
             <span className="h-11 w-11 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400" />
           )}
@@ -57,11 +68,16 @@ export default async function ArtworkDetailPage({ params }) {
           </span>
         </Link>
 
-        <p className="whitespace-pre-line text-neutral-300">{artwork.description}</p>
+        <p className="whitespace-pre-line text-neutral-300">
+          {artwork.description}
+        </p>
 
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <span key={tag} className="rounded-full border border-neutral-700 px-3 py-1 text-sm text-neutral-300">
+            <span
+              key={tag}
+              className="rounded-full border border-neutral-700 px-3 py-1 text-sm text-neutral-300"
+            >
               #{tag}
             </span>
           ))}
@@ -69,7 +85,9 @@ export default async function ArtworkDetailPage({ params }) {
 
         <p className="text-sm text-neutral-400">
           {artwork.like_count} suka · diunggah{" "}
-          {new Date(artwork.created_at).toLocaleDateString("id-ID", { dateStyle: "long" })}
+          {new Date(artwork.created_at).toLocaleDateString("id-ID", {
+            dateStyle: "long",
+          })}
         </p>
 
         {isMember && (
@@ -80,14 +98,21 @@ export default async function ArtworkDetailPage({ params }) {
               favorited={state.favorited}
               likeCount={artwork.like_count}
             />
-            {!isOwner && <ReportForm artworkId={artworkId} alreadyReported={state.reported} />}
+            {!isOwner && (
+              <ReportForm
+                artworkId={artworkId}
+                alreadyReported={state.reported}
+              />
+            )}
           </>
         )}
 
         {!user && (
           <p className="rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-neutral-300">
-            <Link href="/login" className="text-violet-400">Masuk</Link> untuk menyukai, menyimpan,
-            berkomentar, atau melaporkan karya ini.
+            <Link href="/login" className="text-violet-400">
+              Masuk
+            </Link>{" "}
+            untuk menyukai, menyimpan, berkomentar, atau melaporkan karya ini.
           </p>
         )}
         {user && !isMember && (

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { updateProfileAction } from "@/actions/profile";
+import Photo from "@/components/ui/Photo";
 
 function FieldError({ message }) {
   if (!message) return null;
@@ -32,7 +33,7 @@ export default function ProfileForm({ profile }) {
 
       <div className="flex items-center gap-4">
         {profile.avatar_url ? (
-          <img src={profile.avatar_url} alt="Foto profil" className="h-20 w-20 rounded-full object-cover" />
+          <Photo src={profile.avatar_url} alt="Foto profil" sizes="80px" className="h-20 w-20 shrink-0 rounded-full" />
         ) : (
           <div className="h-20 w-20 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400" />
         )}

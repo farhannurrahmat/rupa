@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { createChallengeAction, updateChallengeAction } from "@/actions/challenges";
+import Photo from "@/components/ui/Photo";
 
 function FieldError({ message }) {
   if (!message) return null;
@@ -75,10 +76,10 @@ export default function ChallengeForm({ challenge }) {
 
       <div>
         {isEdit && (
-          <img src={challenge.banner_url} alt="Banner saat ini" className="mb-3 h-36 w-full rounded-xl object-cover" />
+          <Photo src={challenge.banner_url} alt="Banner saat ini" className="mb-3 h-36 w-full rounded-xl" />
         )}
         <label htmlFor="banner">
-          {isEdit ? "Ganti banner (opsional)" : "Gambar banner (JPG, PNG, WEBP, GIF, maks 5 MB)"}
+          {isEdit ? "Ganti banner (opsional)" : "Gambar banner (JPG, PNG, WEBP, GIF, maks 15 MB)"}
         </label>
         <input id="banner" name="banner" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className={inputClass} />
         <FieldError message={errors.banner} />

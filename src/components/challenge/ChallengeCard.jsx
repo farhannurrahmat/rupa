@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Photo from "@/components/ui/Photo";
 
 export default function ChallengeCard({ challenge }) {
   const end = new Date(challenge.end_date).toLocaleDateString("id-ID", { dateStyle: "medium" });
@@ -6,7 +7,7 @@ export default function ChallengeCard({ challenge }) {
   return (
     <li className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
       <Link href={`/challenges/${challenge.id}`}>
-        <img src={challenge.banner_url} alt={challenge.title} className="h-36 w-full object-cover" />
+        <Photo src={challenge.banner_url} alt={challenge.title} className="h-36 w-full" />
         <div className="space-y-1 p-4">
           <h3 className="font-semibold">{challenge.title}</h3>
           <p className="text-sm text-neutral-400">

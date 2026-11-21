@@ -58,3 +58,40 @@ export async function deleteUserAction(formData) {
 
   revalidatePath("/admin/users");
 }
+
+// Dismiss: semua laporan yang belum diproses untuk karya itu ditolak
+export async function dismissReportsAction(formData) {
+  await requireRole("admin");
+
+  const artworkId = Number(formData.get("id"));
+  if (!Number.isInteger(artworkId)) return;
+
+  await query(
+    "UPDATE artwork_reports SET status = 'dismissed' WHERE artwork_id = $1 AND status = 'pending'",
+    [artworkId]
+  );
+  revalidatePath("/admin/moderation");
+  revalidatePath("/admin");
+}
+
+// Take Down: karya dihapus (laporan ikut terhapus lewat CASCADE)
+export async function takeDownArtworkAction(formData) {
+  await requireRole("admin");
+
+  const artworkId = Number(formData.get("id"));
+  if (!Number.isInteger(artworkId)) return;
+
+  // Hanya karya yang memang punya laporan pending yang bisa di-take down
+  const { rows } = await query(
+    `DELETE FROM artworks
+     WHERE id = $1
+       AND EXISTS (SELECT 1 FROM artwork_reports WHERE artwork_id = $1 AND status = 'pending')
+     RETURNING file_url`,
+    [artworkId]
+  );
+  if (rows.length > 0) await deleteImage(rows[0].file_url);
+
+  revalidatePath("/admin/moderation");
+  revalidatePath("/admin");
+  revalidatePath("/");
+}

@@ -7,6 +7,7 @@ export default function Page() {
       <Link href="/member/artworks" className="block text-violet-400">Karya saya</Link>
       <Link href="/member/favorites" className="block text-violet-400">Favorit saya</Link>
       <Link href="/member/profile" className="block text-violet-400">Kelola profil</Link>
+      <Link href="/member/submissions" className="block text-violet-400">Submisi saya</Link>
     </div>
   );
 }

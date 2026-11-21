@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { getArtworksByUser } from "@/lib/queries/artworks";
 import DeleteArtworkButton from "@/components/artwork/DeleteArtworkButton";
+import Photo from "@/components/ui/Photo";
 
 export default async function MyArtworksPage() {
   const user = await getSession();
@@ -31,11 +32,7 @@ export default async function MyArtworksPage() {
                 key={a.id}
                 className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900"
               >
-                <img
-                  src={a.file_url}
-                  alt={a.title}
-                  className="h-56 w-full object-cover"
-                />
+                <Photo src={a.file_url} alt={a.title} className="h-56 w-full rounded-xl" />
                 <div className="space-y-1 p-4">
                   <h2 className="font-semibold">{a.title}</h2>
                   <p className="text-sm text-neutral-400">

@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { updateArtworkAction } from "@/actions/artworks";
+import Photo from "@/components/ui/Photo";
 
 function FieldError({ message }) {
   if (!message) return null;
@@ -31,7 +32,7 @@ export default function ArtworkEditForm({ artwork, categories }) {
       )}
 
       <div>
-        <img src={artwork.file_url} alt={artwork.title} className="h-56 w-full rounded-xl object-cover" />
+        <Photo src={artwork.file_url} alt={artwork.title} className="h-56 w-full rounded-xl" />
         <p className="mt-2 text-sm text-neutral-400">
           File karya tidak dapat diganti. Untuk mengganti file, hapus karya lalu unggah ulang.
         </p>

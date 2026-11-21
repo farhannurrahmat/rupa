@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { deleteCommentAction } from "@/actions/interactions";
+import Photo from "@/components/ui/Photo";
 
 export default function CommentList({ comments, currentUserId }) {
   if (comments.length === 0) {
@@ -11,7 +12,7 @@ export default function CommentList({ comments, currentUserId }) {
       {comments.map((c) => (
         <li key={c.id} className="flex gap-3">
           {c.avatar_url ? (
-            <img src={c.avatar_url} alt="" className="h-9 w-9 rounded-full object-cover" />
+            <Photo src={c.avatar_url} alt="" sizes="36px" className="h-9 w-9 shrink-0 rounded-full" />
           ) : (
             <span className="h-9 w-9 shrink-0 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400" />
           )}

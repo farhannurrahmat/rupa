@@ -9,12 +9,12 @@ const ALLOWED = {
   "image/webp": ".webp",
   "image/gif": ".gif",
 };
-const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+const MAX_SIZE = 15 * 1024 * 1024; // 15 MB
 
 export function validateImage(file) {
   if (!file || typeof file === "string" || file.size === 0) return "File karya wajib diunggah.";
   if (!ALLOWED[file.type]) return "Format file harus JPG, PNG, WEBP, atau GIF.";
-  if (file.size > MAX_SIZE) return "Ukuran file maksimal 5 MB.";
+  if (file.size > MAX_SIZE) return "Ukuran file maksimal 15 MB.";
   return null;
 }
 

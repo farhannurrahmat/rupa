@@ -53,7 +53,7 @@ export default function ArtworkForm({ categories }) {
       </div>
 
       <div>
-        <label htmlFor="file">File karya (JPG, PNG, WEBP, GIF, maks 5 MB)</label>
+        <label htmlFor="file">File karya (JPG, PNG, WEBP, GIF, maks 15 MB)</label>
         <input id="file" name="file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className={inputClass} />
         <FieldError message={errors.file} />
       </div>
