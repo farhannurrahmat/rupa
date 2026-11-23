@@ -65,3 +65,24 @@ export async function getArtworkDetail(id) {
   );
   return rows[0] ?? null;
 }
+
+// Karya pilihan: juara challenge lebih dulu, lalu yang paling banyak disukai
+export async function getFeaturedArtworks(limit = 6) {
+  const { rows } = await query(
+    `SELECT * FROM (
+       SELECT a.id, a.title, a.file_url,
+              c.name AS category_name,
+              u.display_name AS creator_name,
+              (SELECT MIN(s.placement) FROM challenge_submissions s
+                WHERE s.artwork_id = a.id AND s.placement IS NOT NULL) AS best_placement,
+              (SELECT COUNT(*)::int FROM likes l WHERE l.artwork_id = a.id) AS like_count
+       FROM artworks a
+       JOIN categories c ON c.id = a.category_id
+       JOIN users u ON u.id = a.user_id
+     ) t
+     ORDER BY (best_placement IS NULL), best_placement, like_count DESC, id DESC
+     LIMIT $1`,
+    [limit]
+  );
+  return rows;
+}
