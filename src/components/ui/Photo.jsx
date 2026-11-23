@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-// Pembungkus next/image
 export default function Photo({
   src,
   alt,
@@ -8,7 +7,9 @@ export default function Photo({
   sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px",
   fit = "cover",
   priority = false,
+  zoom = false,
 }) {
+  const fitClass = fit === "contain" ? "object-contain" : "object-cover";
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <Image
@@ -17,7 +18,7 @@ export default function Photo({
         fill
         sizes={sizes}
         priority={priority}
-        className={fit === "contain" ? "object-contain" : "object-cover"}
+        className={`${fitClass} ${zoom ? "transition duration-500 group-hover:scale-105" : ""}`}
       />
     </div>
   );

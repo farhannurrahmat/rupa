@@ -47,7 +47,8 @@ export async function toggleFavoriteAction(formData) {
   }
 
   revalidatePath(`/artworks/${artworkId}`);
-  revalidatePath("/member/favorites");
+  revalidatePath("/member/favorites"); 
+  revalidatePath("/");
 }
 
 export async function addCommentAction(prevState, formData) {
