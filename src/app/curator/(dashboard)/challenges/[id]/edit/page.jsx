@@ -13,11 +13,14 @@ export default async function EditChallengePage({ params }) {
   if (!challenge) notFound();
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
-      <div className="mx-auto max-w-xl space-y-6">
+    <main className="w-full space-y-6 px-6 py-10 sm:px-10">
+      <div>
         <h1 className="text-3xl font-bold">Edit Challenge</h1>
-        <ChallengeForm challenge={challenge} />
+        <p className="mt-1 text-sm text-muted">
+          Perbarui informasi, jadwal, atau banner challenge.
+        </p>
       </div>
+      <ChallengeForm challenge={challenge} />
     </main>
   );
 }

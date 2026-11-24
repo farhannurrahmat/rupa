@@ -39,3 +39,15 @@ export async function getCreatorProfile(id) {
   );
   return rows[0] ?? null;
 }
+
+export async function getMemberStats(userId) {
+  const { rows } = await query(
+    `SELECT
+       (SELECT COUNT(*)::int FROM artworks WHERE user_id = $1) AS artworks,
+       (SELECT COUNT(*)::int FROM likes l JOIN artworks a ON a.id = l.artwork_id WHERE a.user_id = $1) AS likes_received,
+       (SELECT COUNT(*)::int FROM favorites WHERE user_id = $1) AS favorites,
+       (SELECT COUNT(*)::int FROM challenge_submissions WHERE user_id = $1) AS submissions`,
+    [userId]
+  );
+  return rows[0];
+}

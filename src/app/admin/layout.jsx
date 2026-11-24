@@ -1,14 +1,15 @@
 import { requireRole } from "@/lib/auth";
-import Navbar from "@/components/layout/Navbar";
-import AdminNav from "@/components/admin/AdminNav";
+import DashShell from "@/components/layout/DashShell";
+
+const LINKS = [
+  { href: "/admin", label: "Statistik", exact: true },
+  { href: "/admin/curators", label: "Verifikasi Curator" },
+  { href: "/admin/users", label: "Pengguna" },
+  { href: "/admin/categories", label: "Kategori" },
+  { href: "/admin/moderation", label: "Moderasi" },
+];
 
 export default async function AdminLayout({ children }) {
-  await requireRole("admin");
-  return (
-    <div className="min-h-screen bg-neutral-950 text-white">
-      <Navbar />
-      <AdminNav />
-      {children}
-    </div>
-  );
+  const user = await requireRole("admin");
+  return <DashShell area="Admin" user={user} links={LINKS}>{children}</DashShell>;
 }

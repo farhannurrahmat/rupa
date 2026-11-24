@@ -19,7 +19,7 @@ export default async function UsersPage({ searchParams }) {
 
   return (
     <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
-      <div className="mx-auto max-w-5xl space-y-6">
+      <div className="mx-auto space-y-6">
         <h1 className="text-3xl font-bold">Kelola Pengguna</h1>
 
         <div className="flex flex-wrap gap-2">
@@ -70,7 +70,7 @@ export default async function UsersPage({ searchParams }) {
                         id={u.id}
                         label="Hapus"
                         confirmText={`Hapus ${u.display_name} beserta seluruh datanya?`}
-                        className="text-red-400"
+                        className="rounded-full border border-red-500/30 bg-red-950/30 px-3.5 py-1 text-xs font-medium text-red-300 transition hover:bg-red-950/70"
                       />
                     )}
                   </td>

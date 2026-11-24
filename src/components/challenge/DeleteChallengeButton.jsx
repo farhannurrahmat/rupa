@@ -11,7 +11,9 @@ export default function DeleteChallengeButton({ id }) {
       }}
     >
       <input type="hidden" name="id" value={id} />
-      <button className="text-sm text-red-400">Hapus</button>
+      <button className="rounded-full border border-red-500/30 bg-red-950/30 px-3.5 py-1.5 text-xs font-medium text-red-300 transition hover:bg-red-950/70">
+        Hapus
+      </button>
     </form>
   );
 }

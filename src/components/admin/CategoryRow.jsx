@@ -6,7 +6,6 @@ import { updateCategoryAction, deleteCategoryAction } from "@/actions/categories
 export default function CategoryRow({ category }) {
   const [editing, setEditing] = useState(false);
 
-  // Setelah simpan berhasil, tutup mode edit
   const [updateState, updateAction, updating] = useActionState(async (prev, formData) => {
     const result = await updateCategoryAction(prev, formData);
     if (result?.success) setEditing(false);
@@ -15,42 +14,74 @@ export default function CategoryRow({ category }) {
 
   const [deleteState, deleteAction, deleting] = useActionState(deleteCategoryAction, null);
 
-  return (
-    <li className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
-      {editing ? (
-        <form action={updateAction} className="flex gap-3">
-          <input type="hidden" name="id" value={category.id} />
-          <input
-            name="name"
-            defaultValue={category.name}
-            aria-label="Nama kategori"
-            className="flex-1 rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2"
-          />
-          <button disabled={updating} className="rounded-full bg-violet-500 px-4 text-black">
-            Simpan
-          </button>
-          <button type="button" onClick={() => setEditing(false)} className="px-2 text-neutral-400">
-            Batal
-          </button>
-        </form>
-      ) : (
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="font-medium">{category.name}</span>
-            <span className="ml-3 text-sm text-neutral-400">{category.artwork_count} karya</span>
-          </div>
-          <div className="flex items-center gap-4 text-sm">
-            <button onClick={() => setEditing(true)} className="text-violet-400">Edit</button>
-            <form action={deleteAction}>
-              <input type="hidden" name="id" value={category.id} />
-              <button disabled={deleting} className="text-red-400">Hapus</button>
-            </form>
-          </div>
-        </div>
-      )}
+  function handleDelete(e) {
+    if (!confirm(`Hapus kategori "${category.name}"?`)) {
+      e.preventDefault();
+    }
+  }
 
-      {updateState?.error && <p className="mt-2 text-sm text-red-400">{updateState.error}</p>}
-      {deleteState?.error && <p className="mt-2 text-sm text-red-400">{deleteState.error}</p>}
-    </li>
+  return (
+    <tr className="transition hover:bg-ink/40">
+      {editing ? (
+        <td colSpan={3} className="px-6 py-4">
+          <form action={updateAction} className="flex flex-wrap items-center gap-2.5">
+            <input type="hidden" name="id" value={category.id} />
+            <input
+              name="name"
+              defaultValue={category.name}
+              aria-label="Nama kategori"
+              autoFocus
+              className="min-w-48 flex-1 rounded-full border border-line bg-ink px-4 py-1.5 text-sm text-white focus:border-accent focus:outline-none"
+            />
+            <button
+              disabled={updating}
+              className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-black transition hover:brightness-110 disabled:opacity-50"
+            >
+              {updating ? "Menyimpan..." : "Simpan"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="rounded-full border border-line bg-ink px-4 py-1.5 text-xs font-medium text-muted transition hover:text-white"
+            >
+              Batal
+            </button>
+          </form>
+          {updateState?.error && (
+            <p className="mt-2 text-xs text-red-400">{updateState.error}</p>
+          )}
+        </td>
+      ) : (
+        <>
+          <td className="px-6 py-4 font-medium text-white">
+            {category.name}
+            {deleteState?.error && (
+              <p className="mt-1 text-xs font-normal text-red-400">{deleteState.error}</p>
+            )}
+          </td>
+          <td className="px-6 py-4 text-muted">{category.artwork_count} karya</td>
+          <td className="px-6 py-4">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="rounded-full border border-line bg-ink px-3.5 py-1 text-xs font-medium text-white transition hover:border-accent hover:text-accent"
+              >
+                Edit
+              </button>
+              <form action={deleteAction} onSubmit={handleDelete}>
+                <input type="hidden" name="id" value={category.id} />
+                <button
+                  disabled={deleting}
+                  className="rounded-full border border-red-500/30 bg-red-950/30 px-3.5 py-1 text-xs font-medium text-red-300 transition hover:bg-red-950/70 disabled:opacity-50"
+                >
+                  {deleting ? "Menghapus..." : "Hapus"}
+                </button>
+              </form>
+            </div>
+          </td>
+        </>
+      )}
+    </tr>
   );
 }

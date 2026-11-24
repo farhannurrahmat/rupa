@@ -17,7 +17,7 @@ export default async function EditArtworkPage({ params }) {
 
   return (
     <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
-      <div className="mx-auto max-w-xl space-y-6">
+      <div className="mx-auto space-y-6">
         <h1 className="text-3xl font-bold">Edit Karya</h1>
         <ArtworkEditForm artwork={artwork} categories={categories} />
       </div>

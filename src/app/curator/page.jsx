@@ -1,3 +1,7 @@
-export default function Page() {
-  return <h1 className="p-8 text-white">Area Curator</h1>;
-}
+import { redirect } from "next/navigation";
+import { requireRole } from "@/lib/auth";
+
+export default async function CuratorIndexPage() {
+  await requireRole("curator");
+  redirect("/curator/challenges");
+} 

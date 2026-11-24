@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { updateArtworkAction } from "@/actions/artworks";
 import Photo from "@/components/ui/Photo";
@@ -12,65 +12,79 @@ function FieldError({ message }) {
 
 export default function ArtworkEditForm({ artwork, categories }) {
   const [state, formAction, pending] = useActionState(updateArtworkAction, null);
-  const errors = state?.errors ?? {};
-  const v = state?.values ?? {
+  const [form, setForm] = useState({
     title: artwork.title,
-    description: artwork.description,
+    description: artwork.description ?? "",
     categoryId: String(artwork.category_id),
-    tags: artwork.tags,
-  };
+    tags: artwork.tags ?? "",
+  });
+  const errors = state?.errors ?? {};
 
-  const inputClass =
-    "w-full rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-white";
+  function onChange(e) {
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  }
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
       <input type="hidden" name="id" value={artwork.id} />
 
-      {errors.general && (
-        <p className="rounded-lg bg-red-950 px-4 py-3 text-sm text-red-300">{errors.general}</p>
-      )}
-
-      <div>
-        <Photo src={artwork.file_url} alt={artwork.title} className="h-56 w-full rounded-xl" />
-        <p className="mt-2 text-sm text-neutral-400">
+      <div className="self-start lg:sticky lg:top-8">
+        <Photo
+          src={artwork.file_url}
+          alt={artwork.title}
+          fit="contain"
+          sizes="(max-width: 1024px) 100vw, 400px"
+          className="aspect-[4/5] w-full rounded-2xl border border-line bg-surface"
+        />
+        <p className="mt-3 text-sm text-muted">
           File karya tidak dapat diganti. Untuk mengganti file, hapus karya lalu unggah ulang.
         </p>
       </div>
 
-      <div>
-        <label htmlFor="title">Judul</label>
-        <input id="title" name="title" defaultValue={v.title} className={inputClass} />
-        <FieldError message={errors.title} />
-      </div>
+      <div className="space-y-5">
+        {errors.general && (
+          <p className="rounded-lg bg-red-950 px-4 py-3 text-sm text-red-300">{errors.general}</p>
+        )}
 
-      <div>
-        <label htmlFor="description">Deskripsi</label>
-        <textarea id="description" name="description" rows={4} defaultValue={v.description} className={inputClass} />
-        <FieldError message={errors.description} />
-      </div>
+        <div>
+          <label htmlFor="title">Judul</label>
+          <input id="title" name="title" value={form.title} onChange={onChange} className="field" />
+          <FieldError message={errors.title} />
+        </div>
 
-      <div>
-        <label htmlFor="categoryId">Kategori</label>
-        <select id="categoryId" name="categoryId" defaultValue={v.categoryId} className={inputClass}>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-        <FieldError message={errors.categoryId} />
-      </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="categoryId">Kategori</label>
+            <select id="categoryId" name="categoryId" value={form.categoryId} onChange={onChange} className="field">
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            <FieldError message={errors.categoryId} />
+          </div>
 
-      <div>
-        <label htmlFor="tags">Tags (pisahkan dengan koma)</label>
-        <input id="tags" name="tags" defaultValue={v.tags} className={inputClass} />
-        <FieldError message={errors.tags} />
-      </div>
+          <div>
+            <label htmlFor="tags">Tag</label>
+            <input id="tags" name="tags" placeholder="neon, cyberpunk (pisahkan dengan koma)" value={form.tags} onChange={onChange} className="field" />
+            <FieldError message={errors.tags} />
+          </div>
+        </div>
 
-      <div className="flex gap-3">
-        <button disabled={pending} className="flex-1 rounded-full bg-violet-500 py-3 font-semibold text-black disabled:opacity-50">
-          {pending ? "Menyimpan..." : "Simpan perubahan"}
-        </button>
-        <Link href="/member/artworks" className="rounded-full border border-neutral-600 px-6 py-3">Batal</Link>
+        <div>
+          <label htmlFor="description">Deskripsi</label>
+          <textarea id="description" name="description" rows={6} value={form.description} onChange={onChange} className="field" />
+          <FieldError message={errors.description} />
+        </div>
+
+        <div className="flex flex-wrap gap-3 pt-2">
+          <button
+            disabled={pending}
+            className="flex-1 rounded-full bg-accent px-8 py-3 font-semibold text-black transition hover:brightness-110 disabled:opacity-50 sm:flex-none"
+          >
+            {pending ? "Menyimpan..." : "Simpan perubahan"}
+          </button>
+          <Link href="/member/artworks" className="btn-ghost">Batal</Link>
+        </div>
       </div>
     </form>
   );
