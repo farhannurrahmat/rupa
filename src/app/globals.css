@@ -2,7 +2,7 @@
 
 @theme {
   --font-sans: "Inter Variable", system-ui, sans-serif;
-  --font-display: "Space Grotesk Variable", "Inter Variable", sans-serif;
+  --font-display: "Space Grotesk Variable", "Inter Variable", sans-serif; 
 
   /* Palet Rupa: hitam kecoklatan dengan aksen terakota */
   --color-ink: #0f0d0b;
@@ -55,4 +55,124 @@ h1, h2, h3 {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+@keyframes drift-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@keyframes drift-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+.drift-up { animation: drift-up 45s linear infinite; }
+.drift-down { animation: drift-down 55s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .drift-up, .drift-down { animation: none; }
+}
+
+/* Butiran halus seperti cetakan foto */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.polaroid {
+  background: var(--color-paper);
+  box-shadow: 0 18px 30px -14px rgba(0, 0, 0, 0.75), 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.tape::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 64px;
+  height: 20px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(217, 119, 74, 0.4);
+  z-index: 5;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-slow { animation: float 7s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .float-slow { animation: none; }
+}
+
+h1, h2 {
+  letter-spacing: -0.03em;
+}
+
+/* ===== HERO LORONG 3D ===== */
+.tn-hero { --mx: 0; --my: 0; --p: 0; --lx: 66; --ly: 46; --nav: 65px; position: relative; height: 195svh; }
+.tn-sticky {
+  position: sticky; top: var(--nav); height: calc(100svh - var(--nav));
+  overflow: hidden; perspective: 1100px; perspective-origin: 67% 48%;
+  background:
+    radial-gradient(40% 52% at calc(var(--lx) * 1%) calc(var(--ly) * 1%), rgba(255, 222, 170, 0.1), transparent 70%),
+    radial-gradient(75% 75% at 68% 46%, #241a14, var(--color-ink) 75%);
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.5);
+}
+.tn-scene {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transform: rotateY(calc(var(--mx) * -4deg)) rotateX(calc(var(--my) * 3deg));
+}
+.tn-pn {
+  --ze: calc(var(--z) + var(--p) * 1450);
+  position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
+  width: calc(var(--w) * 1vw); max-width: 245px; display: block; transform-style: preserve-3d;
+  transform: translate3d(calc(var(--mx) * var(--d) * -32px), calc(var(--my) * var(--d) * -24px), calc(var(--ze) * 1px)) rotateY(calc(var(--ry) * 1deg));
+  opacity: min(clamp(0, calc((480 - var(--ze)) / 260), 1), clamp(0.3, calc((1700 + var(--ze)) / 1000), 1));
+}
+.tn-pi { position: relative; display: block; overflow: hidden; border-radius: 3px; box-shadow: 0 28px 56px -22px rgba(0, 0, 0, 0.85); }
+.tn-lb { display: block; margin-top: 0.45rem; font-size: 0.72rem; line-height: 1.35; color: var(--color-muted); }
+.tn-lb b { display: block; color: var(--color-white); font-weight: 600; }
+.tn-copy {
+  position: absolute; z-index: 3; left: max(2.5rem, calc((100vw - 1360px) / 2 + 2.5rem)); top: 48%; translate: 0 -50%;
+  max-width: 31rem; opacity: calc(1 - var(--p) * 2.5); transform: translate3d(0, calc(var(--p) * -65px), 0);
+}
+.tn-far .tn-copy { visibility: hidden; }
+.tn-hint {
+  position: absolute; z-index: 3; left: max(2.5rem, calc((100vw - 1360px) / 2 + 2.5rem)); bottom: 1.5rem;
+  margin: 0; font-size: 0.8rem; color: var(--color-muted); opacity: calc(1 - var(--p) * 4);
+}
+
+/* Cahaya latar yang mengikuti warna karya */
+.tn-amb {
+  position: fixed; left: 50%; top: 30%; width: 70vw; height: 60vh; translate: -50% 0;
+  border-radius: 50%; filter: blur(110px); opacity: 0.16; background-color: var(--color-accent);
+  transition: background-color 0.9s; z-index: -1; pointer-events: none;
+}
+
+/* Kartu galeri: miring saat hover, foto bergeser saat scroll */
+.pm {
+  box-shadow: 0 22px 46px -24px rgba(0, 0, 0, 0.7);
+  transform: perspective(900px) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
+  transition: transform 0.25s ease-out, box-shadow 0.3s;
+}
+.pm:hover { box-shadow: 0 34px 56px -22px rgba(217, 119, 74, 0.35); }
+.pm-img { position: absolute; left: 0; top: -6%; width: 100%; height: 112%; translate: 0 calc(var(--py, 0) * -5%); }
+
+/* Kipas kartu di banner challenge */
+.tn-fan { position: relative; height: clamp(220px, 26vw, 300px); perspective: 1000px; }
+.tn-fc {
+  position: absolute; top: 6%; left: 50%; width: 38%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px;
+  box-shadow: 0 24px 44px -18px rgba(0, 0, 0, 0.85);
+  transform: translate3d(calc(-50% + var(--k) * 52%), 0, calc(var(--k) * var(--k) * -90px)) rotateY(calc(var(--k) * -22deg));
+  transition: translate 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tn-fan:hover .tn-fc { translate: calc(var(--k) * 10%) 0; }
+
+@media (max-width: 800px) {
+  .tn-copy { left: 1.5rem; right: 1.5rem; top: 6%; translate: 0 0; }
+  .tn-hint { left: 1.5rem; }
+  .tn-scene { top: 38%; left: -28%; }
+  .tn-pn { width: calc(var(--w) * 1.8vw); max-width: 165px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tn-hero { height: auto; }
+  .tn-sticky { position: relative; top: 0; height: auto; min-height: 70svh; }
+  .tn-hint { display: none; }
+  .pm { transition: none; }
 }

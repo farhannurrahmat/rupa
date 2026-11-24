@@ -39,7 +39,7 @@ export default function HeroFan({ artworks }) {
           >
             {art && (
               <Link href={`/artworks/${art.id}`} aria-label={art.title}>
-                <Photo src={art.file_url} alt={art.title} sizes="220px" className="h-full w-full" />
+                <Photo src={art.file_url} alt={art.title} priority={abs <= 0.5} sizes="220px" className="h-full w-full" />
               </Link>
             )}
           </div>

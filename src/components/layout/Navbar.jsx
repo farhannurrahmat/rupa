@@ -14,28 +14,36 @@ export default async function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
-      <Link href="/" className="text-xl font-bold">
-        RUPA<span className="text-violet-400">.</span>
-      </Link>
+    <header className="sticky top-0 z-40 border-b border-line bg-ink/90 backdrop-blur">
+      <nav className="mx-auto flex max-w-[1360px] items-center justify-between px-6 py-4 sm:px-10">
+        <Link href="/" className="font-display text-lg font-bold tracking-tight">
+          RUPA<span className="text-accent">.</span>
+        </Link>
 
-      <div className="flex items-center gap-4 text-sm">
-        {user ? (
-          <>
-            <Link href={dashboardHref} className="text-neutral-300">Dashboard</Link>
-            <form action={logoutAction}>
-              <button className="rounded-full border border-neutral-600 px-4 py-2">Keluar</button>
-            </form>
-          </>
-        ) : (
-          <>
-            <Link href="/login" className="text-neutral-300">Masuk</Link>
-            <Link href="/register" className="rounded-full bg-violet-500 px-4 py-2 font-semibold text-black">
-              Daftar
-            </Link>
-          </>
-        )}
-      </div>
-    </nav>
+        <div className="flex items-center gap-5 text-sm">
+          {user ? (
+            <>
+              <Link href={dashboardHref} className="text-neutral-300 transition hover:text-white">
+                Dashboard
+              </Link>
+              <form action={logoutAction}>
+                <button className="rounded-full border border-neutral-700 px-4 py-1.5 transition hover:border-accent">
+                  Keluar
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-neutral-300 transition hover:text-white">
+                Masuk
+              </Link>
+              <Link href="/register" className="rounded-full bg-accent px-4 py-1.5 font-semibold text-black transition hover:brightness-110">
+                Daftar
+              </Link>
+            </>
+          )}
+        </div>
+      </nav>
+    </header>
   );
 }
