@@ -3,69 +3,48 @@
 import { revalidatePath } from "next/cache";
 import { query } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
-import { CHALLENGE_STATUS_SQL } from "@/lib/sql";
 
-export async function submitArtworkAction(prevState, formData) {
-  const user = await requireRole("member"); // wajib di baris pertama
+export async function setPlacementAction(prevState, formData) {
+  const user = await requireRole("curator"); // wajib di baris pertama
 
-  const challengeId = Number(formData.get("challengeId"));
-  const artworkId = Number(formData.get("artworkId"));
-  if (!Number.isInteger(challengeId) || !Number.isInteger(artworkId)) {
-    return { error: "Pilih karya yang akan disubmit." };
+  const submissionId = Number(formData.get("submissionId"));
+  const rawPlacement = String(formData.get("placement") ?? "").trim();
+  const placement = rawPlacement === "" ? null : Number(rawPlacement);
+
+  if (!Number.isInteger(submissionId)) {
+    return { error: "Submisi tidak valid." };
+  }
+  if (placement !== null && ![1, 2, 3].includes(placement)) {
+    return { error: "Peringkat hanya boleh Juara 1, 2, atau 3." };
   }
 
   try {
-    // Validasi waktu dan kepemilikan karya ada di dalam query itu sendiri
+    // Kepemilikan challenge dan waktu berakhir (NOW() > end_date) divalidasi di SQL
     const result = await query(
-      `INSERT INTO challenge_submissions (challenge_id, artwork_id, user_id)
-       SELECT c.id, $2::int, $3::int
+      `UPDATE challenge_submissions s
+       SET placement = $1
        FROM challenges c
-       WHERE c.id = $1
-         AND NOW() >= c.start_date AND NOW() <= c.end_date
-         AND EXISTS (SELECT 1 FROM artworks a WHERE a.id = $2::int AND a.user_id = $3::int)`,
-      [challengeId, artworkId, user.id]
+       WHERE s.challenge_id = c.id
+         AND s.id = $2
+         AND c.curator_id = $3
+         AND NOW() > c.end_date
+       RETURNING c.id AS challenge_id`,
+      [placement, submissionId, user.id]
     );
 
     if (result.rowCount === 0) {
-      // Tidak ada baris yang masuk: cari tahu alasannya untuk pesan yang jelas
-      const info = await query(
-        `SELECT ${CHALLENGE_STATUS_SQL} AS status FROM challenges c WHERE c.id = $1`,
-        [challengeId]
-      );
-      const status = info.rows[0]?.status;
-      if (!status) return { error: "Challenge tidak ditemukan." };
-      if (status === "upcoming") return { error: "Challenge belum dimulai." };
-      if (status === "ended") return { error: "Challenge sudah berakhir." };
-      return { error: "Karya tidak valid." };
+      return { error: "Pemenang hanya bisa dipilih oleh Curator pemilik setelah challenge berakhir." };
     }
+
+    const challengeId = result.rows[0].challenge_id;
+    revalidatePath(`/curator/challenges/${challengeId}/submissions`);
+    revalidatePath(`/challenges/${challengeId}`);
+    return { success: true };
   } catch (err) {
-    // 23505 = pelanggaran UNIQUE: sudah pernah submit ke challenge ini
-    if (err.code === "23505") return { error: "Kamu sudah mengirim karya ke challenge ini." };
+    // 23505 = pelanggaran UNIQUE (challenge_id, placement)
+    if (err.code === "23505") {
+      return { error: `Juara ${placement} sudah dipilih untuk karya lain di challenge ini.` };
+    }
     throw err;
   }
-
-  revalidatePath(`/challenges/${challengeId}`);
-  revalidatePath("/member/submissions");
-  return { success: true };
-}
-
-// Menarik submisi; formulir ini memakai kolom "id" untuk id challenge
-export async function withdrawSubmissionAction(formData) {
-  const user = await requireRole("member");
-
-  const challengeId = Number(formData.get("id"));
-  if (!Number.isInteger(challengeId)) return;
-
-  // Hanya terhapus kalau milik Member ini DAN challenge belum berakhir
-  await query(
-    `DELETE FROM challenge_submissions s
-     USING challenges c
-     WHERE s.challenge_id = c.id
-       AND c.id = $1 AND s.user_id = $2
-       AND NOW() <= c.end_date`,
-    [challengeId, user.id]
-  );
-
-  revalidatePath(`/challenges/${challengeId}`);
-  revalidatePath("/member/submissions");
 }

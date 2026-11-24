@@ -46,6 +46,27 @@ export async function getChallenges({ q = "", activeOnly = false, limit = 6 } = 
   return rows;
 }
 
+export async function getAllChallenges(status = "") {
+  const { rows } = await query(
+    `SELECT c.id, c.title, c.banner_url, c.start_date, c.end_date,
+            u.display_name AS curator_name,
+            ${CHALLENGE_STATUS_SQL} AS status
+     FROM challenges c
+     JOIN users u ON u.id = c.curator_id
+     WHERE ($1::text = ''
+            OR ($1 = 'upcoming' AND NOW() < c.start_date)
+            OR ($1 = 'active'   AND NOW() >= c.start_date AND NOW() <= c.end_date)
+            OR ($1 = 'ended'    AND NOW() > c.end_date))
+     ORDER BY
+       CASE WHEN NOW() >= c.start_date AND NOW() <= c.end_date THEN 0
+            WHEN NOW() < c.start_date THEN 1
+            ELSE 2 END,
+       c.end_date ASC`,
+    [status]
+  );
+  return rows;
+}
+
 export async function getChallengeDetail(id) {
   const { rows } = await query(
     `SELECT c.id, c.title, c.description, c.rules, c.prize, c.banner_url,
