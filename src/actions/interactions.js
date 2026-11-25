@@ -76,7 +76,7 @@ export async function deleteCommentAction(formData) {
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id)) return;
 
-  // "AND user_id" memastikan hanya pemilik komentar yang bisa menghapus
+  // hanya pemilik komentar yang bisa menghapus
   const { rows } = await query(
     "DELETE FROM comments WHERE id = $1 AND user_id = $2 RETURNING artwork_id",
     [id, user.id]
@@ -104,7 +104,7 @@ export async function reportArtworkAction(prevState, formData) {
       [artworkId, user.id, reason]
     );
   } catch (err) {
-    // 23505 = pelanggaran UNIQUE (artwork_id, reporter_id): sudah pernah melapor
+    // 23505 = pelanggaran unique
     if (err.code === "23505") return { error: "Kamu sudah melaporkan karya ini." };
     throw err;
   }

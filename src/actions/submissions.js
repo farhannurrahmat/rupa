@@ -55,7 +55,7 @@ export async function withdrawSubmissionAction(formData) {
   const challengeId = Number(formData.get("id"));
   if (!Number.isInteger(challengeId)) return;
 
-  // Hanya terhapus kalau milik Member ini DAN challenge belum berakhir
+  // Hanya terhapus kalau milik Member ini dan challenge belum berakhir
   await query(
     `DELETE FROM challenge_submissions s
      USING challenges c

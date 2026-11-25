@@ -40,7 +40,7 @@ export default function ArtworkCard({
   }, [artwork.id, artwork.file_url, onRatio]);
 
   return (
-    <li className="group flex flex-col">
+    <li className="group mb-8 flex break-inside-avoid flex-col">
       <Link
         ref={linkRef}
         href={`/artworks/${artwork.id}`}

@@ -7,10 +7,8 @@ const SESSION_DAYS = 7;
 
 // Dipanggil setelah login/register berhasil
 export async function createSession(userId) {
-  // Token acak 64 karakter, sulit ditebak
   const token = crypto.randomBytes(32).toString("hex");
 
-  // Waktu kedaluwarsa dihitung oleh PostgreSQL agar jamnya konsisten
   await query(
     `INSERT INTO sessions (token, user_id, expires_at)
      VALUES ($1, $2, NOW() + INTERVAL '${SESSION_DAYS} days')`,
@@ -19,7 +17,7 @@ export async function createSession(userId) {
 
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,                                  // tidak bisa dibaca JavaScript di browser
+    httpOnly: true,// tidak bisa dibaca JavaScript di browser
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     maxAge: SESSION_DAYS * 24 * 60 * 60,

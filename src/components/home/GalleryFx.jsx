@@ -11,7 +11,7 @@ export default function GalleryFx() {
     const amb = ambRef.current;
     let ticking = false;
 
-    // Foto di dalam bingkai bergeser pelan saat halaman di-scroll
+    // Foto Parallax
     function parallax() {
       if (ticking) return;
       ticking = true;
@@ -26,7 +26,7 @@ export default function GalleryFx() {
       });
     }
 
-    // Kartu miring mengikuti kursor
+    // Parallax pointer
     function onMove(e) {
       if (e.pointerType === "touch") return;
       const el = e.target.closest?.(".pm");
@@ -45,7 +45,7 @@ export default function GalleryFx() {
       el.style.removeProperty("--ty");
     }
 
-    // Cahaya latar berubah mengikuti warna karya yang disorot
+    // cahaya berubah sesuai warna dominan foto
     function onOver(e) {
       const el = e.target.closest?.("[data-src]");
       if (!el) return;

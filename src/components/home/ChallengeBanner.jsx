@@ -3,7 +3,6 @@ import Photo from "@/components/ui/Photo";
 
 export default function ChallengeBanner({ challenge, extra }) {
   const days = Math.max(0, Math.ceil((new Date(challenge.end_date) - new Date()) / 86400000));
-  // Banner di tengah (paling depan), karya lain di kiri dan kanan
   const fan = [
     { k: -1, src: extra[0]?.file_url ?? challenge.banner_url, alt: extra[0]?.title ?? challenge.title },
     { k: 1, src: extra[1]?.file_url ?? challenge.banner_url, alt: extra[1]?.title ?? challenge.title },

@@ -6,7 +6,6 @@ import { query } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
 import { validateImage, saveImage, deleteImage } from "@/lib/upload";
 
-// Tags: pisah koma, buang yang kosong dan duplikat
 function cleanTags(raw) {
   const list = raw.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
   return [...new Set(list)];
@@ -80,7 +79,6 @@ export async function updateArtworkAction(prevState, formData) {
 
   if (Object.keys(errors).length > 0) return { errors, values };
 
-  // file_url sengaja tidak ada di UPDATE: file tidak bisa diganti
   const result = await query(
     `UPDATE artworks
      SET title = $1, description = $2, category_id = $3, tags = $4
@@ -106,4 +104,6 @@ export async function deleteArtworkAction(formData) {
   if (rows.length > 0) await deleteImage(rows[0].file_url);
 
   revalidatePath("/member/artworks");
+  revalidatePath("/artworks");
+  revalidatePath("/");
 }

@@ -19,7 +19,6 @@ export async function setPlacementAction(prevState, formData) {
   }
 
   try {
-    // Kepemilikan challenge dan waktu berakhir (NOW() > end_date) divalidasi di SQL
     const result = await query(
       `UPDATE challenge_submissions s
        SET placement = $1
@@ -41,7 +40,6 @@ export async function setPlacementAction(prevState, formData) {
     revalidatePath(`/challenges/${challengeId}`);
     return { success: true };
   } catch (err) {
-    // 23505 = pelanggaran UNIQUE (challenge_id, placement)
     if (err.code === "23505") {
       return { error: `Juara ${placement} sudah dipilih untuk karya lain di challenge ini.` };
     }

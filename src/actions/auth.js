@@ -16,13 +16,12 @@ export async function registerAction(prevState, formData) {
   };
   const values = { displayName: input.displayName, email: input.email, role: input.role };
 
-  // Validasi di backend
+  // Validasi backend
   const errors = validateRegister(input);
   if (Object.keys(errors).length > 0) {
     return { errors, values };
   }
 
-  // Email harus belum terdaftar
   const existing = await query("SELECT id FROM users WHERE email = $1", [input.email]);
   if (existing.rows.length > 0) {
     return { errors: { email: "Email sudah terdaftar." }, values };
@@ -58,7 +57,6 @@ export async function loginAction(prevState, formData) {
   );
   const user = rows[0];
 
-  // Pesan error 
   const passwordOk = user ? await bcrypt.compare(password, user.password_hash) : false;
   if (!passwordOk) {
     return { error: "Email atau password salah.", values: { email } };

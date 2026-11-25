@@ -36,7 +36,6 @@ export async function updateCategoryAction(prevState, formData) {
   const error = validateName(name);
   if (error) return { error };
 
-  // Cek nama kembar pada kategori LAIN (id berbeda)
   const dup = await query(
     "SELECT id FROM categories WHERE LOWER(name) = LOWER($1) AND id <> $2",
     [name, id]

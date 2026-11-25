@@ -32,10 +32,8 @@ export async function deleteUserAction(formData) {
   const admin = await requireRole("admin");
 
   const id = Number(formData.get("id"));
-  // Admin tidak boleh menghapus dirinya sendiri
   if (!Number.isInteger(id) || id === admin.id) return;
 
-  // Hanya Member dan Curator yang boleh dihapus, Admin lain tidak
   const target = await query(
     "SELECT avatar_url FROM users WHERE id = $1 AND role IN ('member', 'curator')",
     [id]
@@ -50,7 +48,7 @@ export async function deleteUserAction(formData) {
     [id]
   );
 
-  // Karya, challenge, like, komentar, dan sesinya ikut terhapus (CASCADE)
+  // Karya, challenge, like, komentar, dan sesinya ikut terhapus (cascade)
   await query("DELETE FROM users WHERE id = $1 AND role IN ('member', 'curator')", [id]);
 
   for (const file of files.rows) await deleteImage(file.url);
@@ -74,7 +72,7 @@ export async function dismissReportsAction(formData) {
   revalidatePath("/admin");
 }
 
-// Take Down: karya dihapus (laporan ikut terhapus lewat CASCADE)
+// Take Down: karya dihapus (laporan ikut terhapus lewat cascade)
 export async function takeDownArtworkAction(formData) {
   await requireRole("admin");
 

@@ -4,6 +4,7 @@ import { getArtworks } from "@/lib/queries/artworks";
 import { getAllCategories } from "@/lib/queries/categories";
 import ArtworkCard from "@/components/artwork/ArtworkCard";
 import GalleryFx from "@/components/home/GalleryFx";
+import MasonryGrid from "@/components/artwork/MasonryGrid";
 
 function buildHref({ q, category, sort, page }) {
   const params = new URLSearchParams();
@@ -130,7 +131,7 @@ export default async function ArtworksPage({ searchParams }) {
           )}
         </nav>
 
-        {/* Grid Karya Seragam */}
+        {/* Galeri Masonry */}
         {results.items.length === 0 ? (
           <div className="rounded-sm border border-line bg-surface p-12 text-center">
             <p className="text-sm text-muted">
@@ -138,16 +139,7 @@ export default async function ArtworksPage({ searchParams }) {
             </p>
           </div>
         ) : (
-          <ul className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {results.items.map((artwork) => (
-              <ArtworkCard
-                key={artwork.id}
-                artwork={artwork}
-                interactive={interactive}
-                uniform
-              />
-            ))}
-          </ul>
+          <MasonryGrid items={results.items} interactive={interactive} />
         )}
 
         {/* Navigasi Halaman */}

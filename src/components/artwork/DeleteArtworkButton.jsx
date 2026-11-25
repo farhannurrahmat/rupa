@@ -1,27 +1,24 @@
 "use client";
 
-import { useActionState } from "react";
 import { deleteArtworkAction } from "@/actions/artworks";
 
 export default function DeleteArtworkButton({ id }) {
-  const [state, action, pending] = useActionState(deleteArtworkAction, null);
-
-  function handleSubmit(e) {
-    if (!confirm("Hapus karya ini secara permanen?")) {
-      e.preventDefault();
-    }
-  }
-
   return (
-    <form action={action} onSubmit={handleSubmit}>
+    <form
+      action={deleteArtworkAction}
+      onSubmit={(e) => {
+        if (!confirm("Yakin ingin menghapus karya ini?")) {
+          e.preventDefault();
+        }
+      }}
+    >
       <input type="hidden" name="id" value={id} />
       <button
-        disabled={pending}
-        className="rounded-full px-3 py-1.5 text-xs font-medium text-red-400 transition hover:bg-red-950/60 disabled:opacity-50"
+        type="submit"
+        className="cursor-pointer rounded-full border border-red-900/60 bg-red-950/30 px-4 py-1.5 text-xs font-medium text-red-400 transition hover:border-red-500/60 hover:bg-red-950/60 hover:text-red-300"
       >
-        {pending ? "Menghapus..." : "Hapus"}
+        Hapus
       </button>
-      {state?.error && <p className="mt-1 text-xs text-red-400">{state.error}</p>}
     </form>
   );
 }

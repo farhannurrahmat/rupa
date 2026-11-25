@@ -29,7 +29,6 @@ export async function updateProfileAction(prevState, formData) {
   if (behance && !isValidUrl(behance)) errors.behance = "Tautan harus diawali http:// atau https://";
   if (website && !isValidUrl(website)) errors.website = "Tautan harus diawali http:// atau https://";
 
-  // Foto profil bersifat opsional
   const hasAvatar = avatar && typeof avatar !== "string" && avatar.size > 0;
   if (hasAvatar) {
     const avatarError = validateImage(avatar);
@@ -41,7 +40,6 @@ export async function updateProfileAction(prevState, formData) {
   const old = await query("SELECT avatar_url FROM users WHERE id = $1", [user.id]);
   const newAvatarUrl = hasAvatar ? await saveImage(avatar, "avatars") : null;
 
-  // COALESCE: kalau tidak ada foto baru ($6 kosong), pakai foto lama
   await query(
     `UPDATE users
      SET display_name = $1, bio = $2, link_instagram = $3, link_behance = $4,

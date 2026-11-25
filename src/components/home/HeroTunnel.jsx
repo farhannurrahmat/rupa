@@ -42,13 +42,28 @@ export default function HeroTunnel({ items = [], ctaHref, ctaText }) {
 
   function goTo(i) {
     const hero = heroRef.current;
+    if (!hero || last < 1) return;
+    const clamped = Math.max(0, Math.min(last, i));
     const maxScroll = hero.offsetHeight - window.innerHeight;
     const heroTop = window.scrollY + hero.getBoundingClientRect().top;
     window.scrollTo({
-      top: heroTop + (i / last) * maxScroll,
+      top: heroTop + (clamped / last) * maxScroll,
       behavior: "smooth",
     });
   }
+
+  useEffect(() => {
+    if (last < 1) return;
+    function onKeyDown(e) {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+      const hero = heroRef.current;
+      if (!hero || hero.getBoundingClientRect().bottom < 0) return;
+      if (e.key === "ArrowLeft") goTo(active - 1);
+      if (e.key === "ArrowRight") goTo(active + 1);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [active, last]);
 
   function onCardClick(e, i) {
     if (i === active) return;
@@ -57,7 +72,7 @@ export default function HeroTunnel({ items = [], ctaHref, ctaText }) {
   }
 
   const arrow =
-    "h-10 w-10 rounded-full border border-line text-white transition hover:border-accent disabled:opacity-30 disabled:hover:border-line";
+    "relative z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-line bg-ink text-white transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-line disabled:hover:text-white";
 
   return (
     <section
@@ -119,7 +134,7 @@ export default function HeroTunnel({ items = [], ctaHref, ctaText }) {
                 ))}
               </div>
 
-              <div className="mt-5 flex items-center justify-between gap-4">
+              <div className="relative z-20 mt-5 flex items-center justify-between gap-4">
                 <div
                   key={active}
                   className="lr-meta flex min-w-0 items-center gap-4"
@@ -167,7 +182,7 @@ export default function HeroTunnel({ items = [], ctaHref, ctaText }) {
                 </div>
               </div>
 
-              <div className="mt-4 h-0.5 bg-line">
+              <div className="relative z-20 mt-4 h-0.5 bg-line">
                 <div
                   className="h-full bg-muted transition-all duration-300"
                   style={{ width: `${((active + 1) / items.length) * 100}%` }}

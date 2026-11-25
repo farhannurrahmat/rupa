@@ -2,14 +2,13 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 
-// Hanya format gambar ini yang diterima
 const ALLOWED = {
   "image/jpeg": ".jpg",
   "image/png": ".png",
   "image/webp": ".webp",
   "image/gif": ".gif",
 };
-const MAX_SIZE = 15 * 1024 * 1024; // 15 MB
+const MAX_SIZE = 15 * 1024 * 1024;
 
 export function validateImage(file) {
   if (!file || typeof file === "string" || file.size === 0) return "File karya wajib diunggah.";
@@ -18,9 +17,7 @@ export function validateImage(file) {
   return null;
 }
 
-// Menyimpan file ke public/uploads dan mengembalikan alamat URL-nya
 export async function saveImage(file, folder = "artworks") {
-  // Nama file dibuat acak, nama asli dari pengguna tidak dipakai
   const filename = crypto.randomUUID() + ALLOWED[file.type];
   const dir = path.join(process.cwd(), "public", "uploads", folder);
 
