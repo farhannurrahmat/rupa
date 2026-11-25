@@ -57,7 +57,6 @@ export default async function ArtworksPage({ searchParams }) {
     <>
       <GalleryFx />
       <main className="mx-auto max-w-[1360px] space-y-8 px-6 py-10 sm:px-10">
-        {/* Header Katalog */}
         <div className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-6">
           <div className="space-y-2">
             <Link href="/" className="inline-block text-xs text-muted transition hover:text-accent">

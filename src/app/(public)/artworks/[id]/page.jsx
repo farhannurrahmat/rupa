@@ -58,7 +58,12 @@ export default async function ArtworkDetailPage({ params }) {
           className="flex items-center gap-3"
         >
           {artwork.avatar_url ? (
-           <Photo src={artwork.avatar_url} alt="" sizes="44px" className="h-11 w-11 shrink-0 rounded-full" />
+            <Photo
+              src={artwork.avatar_url}
+              alt=""
+              sizes="44px"
+              className="h-11 w-11 shrink-0 rounded-full"
+            />
           ) : (
             <span className="h-11 w-11 rounded-full bg-gradient-to-br from-violet-500 to-cyan-400" />
           )}
@@ -108,12 +113,26 @@ export default async function ArtworkDetailPage({ params }) {
         )}
 
         {!user && (
-          <p className="rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-neutral-300">
-            <Link href="/login" className="text-violet-400">
-              Masuk
-            </Link>{" "}
-            untuk menyukai, menyimpan, berkomentar, atau melaporkan karya ini.
-          </p>
+          <div className="space-y-3 rounded-xl border border-line bg-surface p-4">
+            <p className="text-sm text-muted">
+              Masuk untuk menyukai, menyimpan, berkomentar, atau melaporkan
+              karya ini.
+            </p>
+            <div className="flex gap-2">
+              <Link
+                href="/login"
+                className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-black"
+              >
+                Masuk
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-full border border-line px-5 py-2 text-sm"
+              >
+                Daftar
+              </Link>
+            </div>
+          </div>
         )}
         {user && !isMember && (
           <p className="rounded-xl border border-neutral-800 bg-neutral-900 p-4 text-sm text-neutral-300">

@@ -51,3 +51,16 @@ export async function getMemberStats(userId) {
   );
   return rows[0];
 }
+
+export async function getCreators() {
+  const { rows } = await query(
+    `SELECT u.id, u.display_name, u.avatar_url, u.bio, COUNT(a.id)::int AS artwork_count
+     FROM users u
+     LEFT JOIN artworks a ON a.user_id = u.id
+     WHERE u.role = 'member'
+     GROUP BY u.id
+     HAVING COUNT(a.id) > 0
+     ORDER BY artwork_count DESC, u.display_name`
+  );
+  return rows;
+}

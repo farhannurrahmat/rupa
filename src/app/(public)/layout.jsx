@@ -3,10 +3,10 @@ import Footer from "@/components/layout/Footer";
 
 export default function PublicLayout({ children }) {
   return (
-    <div className="min-h-screen bg-ink text-white">
+    <div className="flex min-h-screen flex-col bg-ink text-white">
       <Navbar />
-      {children}
-      <Footer/>
+      <div className="flex-1">{children}</div>
+      <Footer />
     </div>
   );
 }
