@@ -9,76 +9,107 @@ const FILTERS = [
   { value: "curator", label: "Curator" },
   { value: "admin", label: "Admin" },
 ];
-const STATUS = { pending: "Menunggu", approved: "Disetujui", rejected: "Ditolak" };
+
+const ROLE_LABEL = {
+  admin: "Admin",
+  curator: "Curator",
+  member: "Member",
+};
+
+const STATUS = {
+  pending: "Menunggu",
+  approved: "Disetujui",
+  rejected: "Ditolak",
+};
 
 export default async function UsersPage({ searchParams }) {
   const { role } = await searchParams;
-  // Nilai dari URL divalidasi, selain tiga peran ini dianggap "semua"
   const filter = ["member", "curator", "admin"].includes(role) ? role : "";
   const users = await getUsers(filter);
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
-      <div className="mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">Kelola Pengguna</h1>
+    <main className="w-full space-y-6 px-6 py-10 sm:px-10">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Kelola Pengguna</h1>
+          <p className="mt-1 text-sm text-muted">{users.length} akun terdaftar</p>
+        </div>
 
         <div className="flex flex-wrap gap-2">
           {FILTERS.map((f) => (
             <Link
               key={f.value}
               href={f.value ? `/admin/users?role=${f.value}` : "/admin/users"}
-              className={`rounded-full px-4 py-2 text-sm ${
-                filter === f.value ? "bg-white text-black" : "border border-neutral-700 text-neutral-300"
+              className={`rounded-full px-4 py-1.5 text-xs font-medium transition ${
+                filter === f.value
+                  ? "bg-accent font-semibold text-black"
+                  : "border border-line bg-surface text-muted hover:text-white"
               }`}
             >
               {f.label}
             </Link>
           ))}
         </div>
+      </div>
 
-        <div className="overflow-x-auto rounded-xl border border-neutral-800">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-neutral-900 text-neutral-400">
-              <tr>
-                <th className="px-4 py-3">Nama</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Peran</th>
-                <th className="px-4 py-3">Terdaftar</th>
-                <th className="px-4 py-3">Aksi</th>
+      <div className="overflow-x-auto rounded-sm border border-line bg-surface">
+        {users.length === 0 ? (
+          <p className="p-6 text-sm text-muted">Tidak ada pengguna pada filter ini.</p>
+        ) : (
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-line text-xs uppercase tracking-wider text-muted">
+                <th className="px-6 py-4 font-medium">Nama</th>
+                <th className="px-6 py-4 font-medium">Email</th>
+                <th className="px-6 py-4 font-medium">Peran</th>
+                <th className="px-6 py-4 font-medium">Terdaftar</th>
+                <th className="px-6 py-4 font-medium">Aksi</th>
               </tr>
             </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} className="border-t border-neutral-800">
-                  <td className="px-4 py-3">{u.display_name}</td>
-                  <td className="px-4 py-3 text-neutral-300">{u.email}</td>
-                  <td className="px-4 py-3">
-                    {u.role}
-                    {u.curator_status && (
-                      <span className="ml-2 text-xs text-neutral-400">({STATUS[u.curator_status]})</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-neutral-400">
-                    {new Date(u.created_at).toLocaleDateString("id-ID")}
-                  </td>
-                  <td className="px-4 py-3">
-                    {u.role === "admin" ? (
-                      <span className="text-neutral-500">Tidak dapat dihapus</span>
-                    ) : (
-                      <ConfirmActionButton
-                        action={deleteUserAction}
-                        id={u.id}
-                        label="Hapus"
-                        confirmText={`Hapus ${u.display_name} beserta seluruh datanya?`}
-                        className="rounded-full border border-red-500/30 bg-red-950/30 px-3.5 py-1 text-xs font-medium text-red-300 transition hover:bg-red-950/70"
-                      />
-                    )}
-                  </td>
-                </tr>
-              ))}
+            <tbody className="divide-y divide-line">
+              {users.map((u) => {
+                const isElevated = u.role === "admin" || u.role === "curator";
+
+                return (
+                  <tr key={u.id} className="transition hover:bg-white/[0.02]">
+                    <td className="px-6 py-4 font-medium text-white">{u.display_name}</td>
+                    <td className="px-6 py-4 text-muted">{u.email}</td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-sm border px-2.5 py-0.5 text-xs font-medium ${
+                          isElevated
+                            ? "border-accent/40 bg-accent/10 text-accent"
+                            : "border-line bg-ink/60 text-muted"
+                        }`}
+                      >
+                        <span>{ROLE_LABEL[u.role] ?? u.role}</span>
+                        {u.curator_status && (
+                          <span className="text-[11px] opacity-80">· {STATUS[u.curator_status]}</span>
+                        )}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-muted">
+                      {new Date(u.created_at).toLocaleDateString("id-ID")}
+                    </td>
+                    <td className="px-6 py-4">
+                      {u.role === "admin" ? (
+                        <span className="text-xs text-muted">Akun utama</span>
+                      ) : (
+                        <ConfirmActionButton
+                          action={deleteUserAction}
+                          id={u.id}
+                          label="Hapus"
+                          confirmText={`Hapus ${u.display_name} beserta seluruh datanya?`}
+                          className="rounded-full border border-red-500/30 bg-red-950/30 px-3.5 py-1 text-xs font-medium text-red-300 transition hover:bg-red-950/70"
+                        />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-        </div>
+        )}
       </div>
     </main>
   );

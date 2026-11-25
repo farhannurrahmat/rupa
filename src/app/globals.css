@@ -4,33 +4,34 @@
   --font-sans: "Inter Variable", system-ui, sans-serif;
   --font-display: "Space Grotesk Variable", "Inter Variable", sans-serif;
 
-  /* Palet Rupa: hitam netral, aksen terakota, pendukung sage */
-  --color-ink: #0e0e0e;
-  --color-surface: #171717;
-  --color-line: #2a2a2a;
-  --color-muted: #a1a1a0;
-  --color-accent: #d9774a;
-  --color-accent-2: #9bb08a;
+  /* Palet RUPA: Obsidian & Brass (Mewah, Kuratorial, Netral untuk Galeri) */
+  --color-ink: #0b0b0c;
+  --color-surface: #141416;
+  --color-paper: #eae5dc;
+  --color-line: #27272b;
+  --color-muted: #8e8d92;
+  --color-accent: #d4a359;
+  --color-accent-2: #7fa08a;
 
-  /* Teks putih lembut, dan teks di atas tombol aksen hampir hitam */
-  --color-white: #f2f1ee;
-  --color-black: #121212;
+  /* Teks gading hangat & kontras tinggi di atas tombol aksen */
+  --color-white: #f4f1ea;
+  --color-black: #0e0e10;
 
-  /* Deret abu-abu netral */
-  --color-neutral-950: #0e0e0e;
-  --color-neutral-900: #171717;
-  --color-neutral-800: #2a2a2a;
-  --color-neutral-700: #3c3c3c;
-  --color-neutral-600: #525252;
-  --color-neutral-500: #8a8a88;
-  --color-neutral-400: #a1a1a0;
-  --color-neutral-300: #c8c8c5;
+  /* Deret obsidian netral */
+  --color-neutral-950: #0b0b0c;
+  --color-neutral-900: #141416;
+  --color-neutral-800: #202024;
+  --color-neutral-700: #313136;
+  --color-neutral-600: #48484f;
+  --color-neutral-500: #6e6e75;
+  --color-neutral-400: #8e8d92;
+  --color-neutral-300: #c7c4be;
 
-  /* Aksen utama menggantikan ungu */
-  --color-violet-500: #d9774a;
-  --color-violet-400: #e69066;
-  --color-cyan-400: #9bb08a;
-  --color-cyan-300: #b4c6a5;
+  /* Alias aksen agar konsisten di seluruh komponen */
+  --color-violet-500: #d4a359;
+  --color-violet-400: #e2b876;
+  --color-cyan-400: #7fa08a;
+  --color-cyan-300: #9ebaa7;
 }
 
 html {
@@ -42,6 +43,7 @@ body {
   background: var(--color-ink);
   color: var(--color-white);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3 {
@@ -49,7 +51,8 @@ h1, h2, h3 {
 }
 
 ::selection {
-  background: rgba(217, 119, 74, 0.35);
+  background: rgba(212, 163, 89, 0.32);
+  color: var(--color-white);
 }
 
 :focus-visible {
@@ -65,20 +68,21 @@ h1, h2, h3 {
   .drift-up, .drift-down { animation: none; }
 }
 
-/* Butiran halus seperti cetakan foto */
+/* Tekstur kertas fine-art halus */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.07;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 .polaroid {
   background: var(--color-paper);
-  box-shadow: 0 18px 30px -14px rgba(0, 0, 0, 0.75), 0 2px 4px rgba(0, 0, 0, 0.4);
+  color: var(--color-black);
+  box-shadow: 0 18px 32px -14px rgba(0, 0, 0, 0.85), 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 .tape::before {
   content: "";
@@ -88,7 +92,7 @@ body::after {
   width: 64px;
   height: 20px;
   transform: translateX(-50%) rotate(-3deg);
-  background: rgba(217, 119, 74, 0.4);
+  background: rgba(212, 163, 89, 0.42);
   z-index: 5;
 }
 @keyframes float {
@@ -104,7 +108,7 @@ h1, h2 {
   letter-spacing: -0.03em;
 }
 
-/* Hero lorong Pamer  */
+/* Hero lorong Pamer */
 .lr-hero {
   --nav: 65px;
   position: relative;
@@ -131,13 +135,13 @@ h1, h2 {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 34% 90% at 50% 0%, rgba(255, 255, 255, 0.08), transparent 72%);
+  background: radial-gradient(ellipse 36% 90% at 50% 0%, rgba(244, 241, 234, 0.06), transparent 72%);
   pointer-events: none;
 }
 .lr-floor {
   position: absolute;
   inset: calc(var(--ph) * 1.04) 0 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.14) 0, rgba(255, 255, 255, 0.14) 1px, rgba(255, 255, 255, 0.04) 1px, transparent);
+  background: linear-gradient(to bottom, rgba(244, 241, 234, 0.11) 0, rgba(244, 241, 234, 0.11) 1px, rgba(244, 241, 234, 0.025) 1px, transparent);
 }
 .lr-card {
   --o: calc(var(--i) - var(--pos, 0));
@@ -173,27 +177,40 @@ h1, h2 {
   from { opacity: 0; translate: 0 8px; }
 }
 
-/* Cahaya latar yang mengikuti warna karya */
+/* Cahaya latar halus bernuansa kuningan */
 .tn-amb {
-  position: fixed; left: 50%; top: 30%; width: 70vw; height: 60vh; translate: -50% 0;
-  border-radius: 50%; filter: blur(110px); opacity: 0.16; background-color: var(--color-accent);
-  transition: background-color 0.9s; z-index: -1; pointer-events: none;
+  position: fixed;
+  left: 50%;
+  top: 30%;
+  width: 70vw;
+  height: 60vh;
+  translate: -50% 0;
+  border-radius: 50%;
+  filter: blur(130px);
+  opacity: 0.11;
+  background-color: var(--color-accent);
+  transition: background-color 0.9s;
+  z-index: -1;
+  pointer-events: none;
 }
 
-/* Kartu galeri: miring saat hover, foto bergeser saat scroll */
+/* Kartu galeri: bingkai tipis kuningan saat hover */
 .pm {
-  box-shadow: 0 22px 46px -24px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 22px 44px -24px rgba(0, 0, 0, 0.82);
   transform: perspective(900px) rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
-  transition: transform 0.25s ease-out, box-shadow 0.3s;
+  transition: transform 0.25s ease-out, box-shadow 0.3s, border-color 0.3s;
 }
-.pm:hover { box-shadow: 0 34px 56px -22px rgba(217, 119, 74, 0.35); }
+.pm:hover {
+  box-shadow: 0 30px 54px -20px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(212, 163, 89, 0.4);
+}
 .pm-img { position: absolute; left: 0; top: -6%; width: 100%; height: 112%; translate: 0 calc(var(--py, 0) * -5%); }
 
 /* Kipas kartu di banner challenge */
 .tn-fan { position: relative; height: clamp(220px, 26vw, 300px); perspective: 1000px; }
 .tn-fc {
   position: absolute; top: 6%; left: 50%; width: 38%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px;
-  box-shadow: 0 24px 44px -18px rgba(0, 0, 0, 0.85);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 24px 44px -18px rgba(0, 0, 0, 0.88);
   transform: translate3d(calc(-50% + var(--k) * 52%), 0, calc(var(--k) * var(--k) * -90px)) rotateY(calc(var(--k) * -22deg));
   transition: translate 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -201,7 +218,7 @@ h1, h2 {
 
 @media (prefers-reduced-motion: reduce) {
   .pm { transition: none; }
-    .lr-meta { animation: none; }
+  .lr-meta { animation: none; }
 }
 
 /* ===== Kelas bersama ===== */
@@ -238,4 +255,4 @@ h1, h2 {
 .dash thead { background: var(--color-surface); }
 .dash th { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
 .dash tbody tr { transition: background 0.15s; }
-.dash tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+.dash tbody tr:hover { background: rgba(244, 241, 234, 0.03); }

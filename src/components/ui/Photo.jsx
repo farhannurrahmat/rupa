@@ -8,7 +8,24 @@ export default function Photo({
   fit = "cover",
   priority = false,
   zoom = false,
+  natural = false,
 }) {
+  if (natural) {
+    return (
+      <div className="relative overflow-hidden">
+        <Image
+          src={src}
+          alt={alt}
+          width={0}
+          height={0}
+          sizes={sizes}
+          priority={priority}
+          className={`h-auto w-full ${zoom ? "transition duration-500 group-hover:scale-105" : ""} ${className}`}
+        />
+      </div>
+    );
+  }
+
   const fitClass = fit === "contain" ? "object-contain" : "object-cover";
   return (
     <div className={`relative overflow-hidden ${className}`}>
